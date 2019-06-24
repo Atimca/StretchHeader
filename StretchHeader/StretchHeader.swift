@@ -12,17 +12,13 @@ import UIKit
 
 open class StretchHeader: UIView {
     
-    open var imageView : UIImageView!
+    open var imageView: UIImageView!
     var navigationView: UIView?
-    fileprivate weak var scrollView: UIScrollView?
-    fileprivate var contentSize = CGSize.zero
-    fileprivate var topInset : CGFloat = 0
-    fileprivate var options: StretchHeaderOptions!
-    fileprivate var isObservingScrollView: Bool = false
-    
-    convenience init() {
-        self.init(frame: CGRect.zero)
-    }
+    private weak var scrollView: UIScrollView?
+    private var contentSize = CGSize.zero
+    private var topInset : CGFloat = 0
+    private var options: StretchHeaderOptions!
+    private var isObservingScrollView: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.zero)
@@ -32,6 +28,23 @@ open class StretchHeader: UIView {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
+    }
+    
+    func layoutTableHeaderView() {
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        let widthConstraint = widthAnchor.constraint(equalToConstant: bounds.size.width)
+        addConstraint(widthConstraint)
+        
+        setNeedsLayout()
+        layoutIfNeeded()
+        
+        let calculatedHeight = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        frame.size.height = calculatedHeight
+        setup(imageSize: .init(width: imageView.bounds.width, height: calculatedHeight))
+        
+        removeConstraint(widthConstraint)
+        translatesAutoresizingMaskIntoConstraints = true
     }
     
     open override func willMove(toWindow newWindow: UIWindow?) {
@@ -68,7 +81,12 @@ open class StretchHeader: UIView {
         self.scrollView = self.superview as? UIScrollView
         
         self.observeScrollViewIfPossible()
-        
+        layoutTableHeaderView()
+    }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        fatalError()
     }
     
     fileprivate func stopObservingScrollView() {

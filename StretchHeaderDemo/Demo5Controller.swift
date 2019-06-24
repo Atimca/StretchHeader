@@ -42,7 +42,6 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         view.addSubview(button)
         
         setupHeaderView()
-        layoutTableHeaderView()
     }
     
     override func viewDidLayoutSubviews() {
