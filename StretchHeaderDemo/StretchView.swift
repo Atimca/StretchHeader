@@ -27,10 +27,7 @@ class StretchView: StretchHeader {
         button.setTitleColor(UIColor.lightGray, for: UIControl.State())
         button.layer.cornerRadius = 5.0
         button.layer.borderColor = UIColor.lightGray.cgColor
-        button.layer.borderWidth = 1.0
-        
-        setup(headerSize: CGSize(width: frame.size.width, height: 160), imageSize: CGSize(width: frame.size.width, height: 120))
-        
+        button.layer.borderWidth = 1.0        
     }
     
 }

@@ -60,7 +60,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         options.isNavigationViewAnimated = true
         
         header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as? StretchView
-        
+        header.setup(headerSize: CGSize(width: view.frame.size.width, height: 160), imageSize: CGSize(width: view.frame.size.width, height: 120))
         header.setup(options: options, withController: self, navigationView: self.navigationView)
         header.imageView.image = UIImage(named: "photo_sample_05")
         
