@@ -10,7 +10,7 @@ import UIKit
 
 class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var header : StretchHeader!
+    //var header : StretchHeader!
     var tableView : UITableView!
     var navigationView = UIView()
     
@@ -42,7 +42,11 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         view.addSubview(button)
         
         setupHeaderView()
-        
+        layoutTableHeaderView()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,6 +56,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
+    
     func setupHeaderView() {
         
         let options = StretchHeaderOptions()
@@ -59,8 +64,11 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         options.scrollUpdateMethod = .notification
         options.isNavigationViewAnimated = true
         
-        header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as? StretchView
-        header.setup(headerSize: CGSize(width: view.frame.size.width, height: 160), imageSize: CGSize(width: view.frame.size.width, height: 120))
+        let header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as! StretchView
+        header.setup(headerSize: CGSize(width: 0,
+                                        height: 0),
+                     imageSize: CGSize(width: view.frame.size.width,
+                                       height: 120))
         header.setup(options: options, withController: self, navigationView: self.navigationView)
         header.imageView.image = UIImage(named: "photo_sample_05")
         
@@ -87,5 +95,27 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath)
         cell.textLabel?.text = "index -- \((indexPath as NSIndexPath).row)"
         return cell
+    }
+    
+    func layoutTableHeaderView() {
+        
+        guard let headerView = tableView.tableHeaderView else { return }
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let widthConstrant = headerView.widthAnchor.constraint(equalToConstant: headerView.bounds.size.width)
+        widthConstrant.isActive = true
+        
+        headerView.setNeedsLayout()
+        headerView.layoutIfNeeded()
+        
+        let headerSize = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        let height = headerSize.height
+        var frame = headerView.frame
+        
+        frame.size.height = height
+        headerView.frame = frame
+        
+        headerView.removeConstraints([widthConstrant])
+        headerView.translatesAutoresizingMaskIntoConstraints = true
     }
 }
