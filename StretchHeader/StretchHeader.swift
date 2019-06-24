@@ -132,20 +132,17 @@ open class StretchHeader: UIView {
     }
     
     /// Size setup
-    open func setup(headerSize: CGSize, imageSize: CGSize) {
+    open func setup(imageSize: CGSize) {
         
         imageView.frame = CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height)
-        contentSize = imageSize
-        frame = CGRect(x: 0, y: 0, width: headerSize.width, height: headerSize.height)
-        
+        contentSize = imageSize        
     }
     
     /// Full setup. Use without XIB init
-    open func stretchHeaderSize(headerSize: CGSize, imageSize: CGSize, controller: UIViewController, options: StretchHeaderOptions, navigationView: UIView? = nil) {
+    open func stretchHeaderSize(imageSize: CGSize, controller: UIViewController, options: StretchHeaderOptions, navigationView: UIView? = nil) {
         
         setup(options: options, withController: controller, navigationView: navigationView)
-        setup(headerSize: headerSize, imageSize: imageSize)
-        
+        setup(imageSize: imageSize)
     }
     
     open func updateScrollViewOffset(_ scrollView: UIScrollView) {

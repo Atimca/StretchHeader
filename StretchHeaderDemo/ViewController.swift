@@ -54,16 +54,16 @@ class ViewController: UITableViewController {
         switch indexPath.row {
             
         case 0:
-            vc = Demo1Controller()
+            vc = Demo5Controller()
             
         case 1:
-            vc = Demo2Controller()
+            vc = Demo5Controller()
             
         case 2:
-            vc = Demo3Controller()
+            vc = Demo5Controller()
             
         case 3:
-            vc = Demo4Controller()
+            vc = Demo5Controller()
             
         case 4:
             vc = Demo5Controller()

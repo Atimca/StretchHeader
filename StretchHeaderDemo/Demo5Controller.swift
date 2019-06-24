@@ -65,9 +65,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         options.isNavigationViewAnimated = true
         
         let header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as! StretchView
-        header.setup(headerSize: CGSize(width: 0,
-                                        height: 0),
-                     imageSize: CGSize(width: view.frame.size.width,
+        header.setup(imageSize: CGSize(width: view.frame.size.width,
                                        height: 120))
         header.setup(options: options, withController: self, navigationView: self.navigationView)
         header.imageView.image = UIImage(named: "photo_sample_05")
@@ -107,15 +105,10 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         
         headerView.setNeedsLayout()
         headerView.layoutIfNeeded()
+
+        headerView.frame.size.height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         
-        let headerSize = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        let height = headerSize.height
-        var frame = headerView.frame
-        
-        frame.size.height = height
-        headerView.frame = frame
-        
-        headerView.removeConstraints([widthConstrant])
+        headerView.removeConstraint(widthConstrant)
         headerView.translatesAutoresizingMaskIntoConstraints = true
     }
 }
