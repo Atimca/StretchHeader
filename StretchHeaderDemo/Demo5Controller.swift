@@ -46,6 +46,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        layoutTableHeaderView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,14 +59,19 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
     
     func setupHeaderView() {
         
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        } else {
+            self.automaticallyAdjustsScrollViewInsets = false
+        }
+        
         let options = StretchHeaderOptions()
         options.position = .fullScreenTop
         options.scrollUpdateMethod = .notification
         options.isNavigationViewAnimated = true
         
         let header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as! StretchView
-        header.setup(imageSize: CGSize(width: view.frame.size.width,
-                                       height: 120))
+        header.frame.origin.y = -44
         header.setup(options: options, withController: self, navigationView: self.navigationView)
         header.imageView.image = UIImage(named: "photo_sample_05")
         
@@ -96,7 +102,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
     
     func layoutTableHeaderView() {
         
-        guard let headerView = tableView.tableHeaderView else { return }
+        guard let headerView = tableView.tableHeaderView as? StretchHeader else { return }
         headerView.translatesAutoresizingMaskIntoConstraints = false
         
         let widthConstrant = headerView.widthAnchor.constraint(equalToConstant: headerView.bounds.size.width)
@@ -105,7 +111,8 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         headerView.setNeedsLayout()
         headerView.layoutIfNeeded()
 
-        headerView.frame.size.height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        headerView.bounds.size.height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        headerView.setup(imageSize: headerView.bounds.size)
         
         headerView.removeConstraint(widthConstrant)
         headerView.translatesAutoresizingMaskIntoConstraints = true

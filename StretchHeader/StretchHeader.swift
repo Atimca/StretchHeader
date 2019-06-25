@@ -30,23 +30,6 @@ open class StretchHeader: UIView {
         commonInit()
     }
     
-    func layoutTableHeaderView() {
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        let widthConstraint = widthAnchor.constraint(equalToConstant: bounds.size.width)
-        addConstraint(widthConstraint)
-        
-        setNeedsLayout()
-        layoutIfNeeded()
-        
-        let calculatedHeight = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        frame.size.height = calculatedHeight
-        setup(imageSize: .init(width: imageView.bounds.width, height: calculatedHeight))
-        
-        removeConstraint(widthConstraint)
-        translatesAutoresizingMaskIntoConstraints = true
-    }
-    
     open override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         
@@ -81,12 +64,7 @@ open class StretchHeader: UIView {
         self.scrollView = self.superview as? UIScrollView
         
         self.observeScrollViewIfPossible()
-        layoutTableHeaderView()
-    }
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        fatalError()
+     //   layoutTableHeaderView()
     }
     
     fileprivate func stopObservingScrollView() {
