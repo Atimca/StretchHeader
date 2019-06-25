@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import RxSwift
 
 class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     //var header : StretchHeader!
     var tableView : UITableView!
     var navigationView = UIView()
+    
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,20 +71,20 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
             self.automaticallyAdjustsScrollViewInsets = false
         }
         
-        let options = StretchHeaderOptions()
-        options.position = .fullScreenTop
-        options.scrollUpdateMethod = .notification
-        options.isNavigationViewAnimated = true
-        
-        let header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as! StretchView
-        header.setup(options: options, withController: self, navigationView: self.navigationView)
-        
+        let header = StretchView()
         header.imageView.image = UIImage(named: "photo_sample_05")
 
         // Works only before setting to tableHeaderView for ios 10 and below.
         layoutTableHeaderView(headerView: header)
         
         tableView.tableHeaderView = header
+        
+        tableView.rx
+            .contentOffset
+            .bind {
+                header.updateStretch(withScrollViewOffset: $0)
+            }
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Selector
