@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import RxSwift
 
 class StretchView: StretchHeader {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(scrollOffsetObservable: Observable<CGFloat>) {
+        super.init(scrollOffsetObservable: scrollOffsetObservable)
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false

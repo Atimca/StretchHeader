@@ -9,7 +9,7 @@
 import UIKit
 import RxSwift
 
-class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class Demo5Controller: UIViewController {
     
     //var header : StretchHeader!
     var tableView : UITableView!
@@ -22,7 +22,6 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         
         tableView = UITableView(frame: view.bounds, style: .plain)
         tableView.dataSource = self
-        tableView.delegate = self
         view.addSubview(tableView)
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "TableViewCell")
@@ -54,7 +53,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
             self.automaticallyAdjustsScrollViewInsets = false
         }
         
-        let header = StretchView()
+        let header = StretchView(scrollOffsetObservable: tableView.rx.contentOffset.map { $0.y })
         let imageView = UIImageView(image: UIImage(named: "photo_sample_05"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         header.strechView.addSubview(imageView)
@@ -66,38 +65,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
 
         // Works only before setting to tableHeaderView for ios 10 and below.
         layoutTableHeaderView(headerView: header)
-        
         tableView.tableHeaderView = header
-        
-        tableView.rx
-            .contentOffset
-            .map { $0.y }
-            .bind {
-                header.updateStretch(withScrollViewOffset: $0)
-            }
-            .disposed(by: disposeBag)
-    }
-    
-    // MARK: - Selector
-    @objc func leftButtonAction() {
-        self.navigationController?.popViewController(animated: true)
-    }
-    
-    // MARK: - Table view data source
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 20
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath)
-        cell.textLabel?.text = "index -- \((indexPath as NSIndexPath).row)"
-        return cell
     }
     
     func layoutTableHeaderView(headerView: UIView) {
@@ -113,5 +81,17 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         
         headerView.removeConstraint(widthConstrant)
         headerView.translatesAutoresizingMaskIntoConstraints = true
+    }
+}
+
+extension Demo5Controller: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 20
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath)
+        cell.textLabel?.text = "index -- \((indexPath as NSIndexPath).row)"
+        return cell
     }
 }
