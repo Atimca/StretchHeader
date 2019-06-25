@@ -46,7 +46,6 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        layoutTableHeaderView()
         if #available(iOS 11.0, *) {
             tableView.scrollIndicatorInsets = view.safeAreaInsets
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
@@ -75,9 +74,12 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         options.isNavigationViewAnimated = true
         
         let header = Bundle.main.loadNibNamed("StretchView", owner: nil, options: nil)?.first as! StretchView
-        header.frame.origin.y = -44
         header.setup(options: options, withController: self, navigationView: self.navigationView)
+        
         header.imageView.image = UIImage(named: "photo_sample_05")
+
+        // Works only before setting to tableHeaderView for ios 10 and below.
+        layoutTableHeaderView(headerView: header)
         
         tableView.tableHeaderView = header
     }
@@ -104,19 +106,16 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         return cell
     }
     
-    func layoutTableHeaderView() {
-        
-        guard let headerView = tableView.tableHeaderView as? StretchHeader else { return }
+    func layoutTableHeaderView(headerView: UIView) {
         headerView.translatesAutoresizingMaskIntoConstraints = false
         
-        let widthConstrant = headerView.widthAnchor.constraint(equalToConstant: headerView.bounds.size.width)
+        let widthConstrant = headerView.widthAnchor.constraint(equalToConstant: view.bounds.size.width)
         widthConstrant.isActive = true
         
         headerView.setNeedsLayout()
         headerView.layoutIfNeeded()
-
+        
         headerView.bounds.size.height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        headerView.setup(imageSize: headerView.bounds.size)
         
         headerView.removeConstraint(widthConstrant)
         headerView.translatesAutoresizingMaskIntoConstraints = true

@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
+import RxOptional
 
 // MARK: - UIScrollView Extension
 
@@ -19,6 +22,8 @@ open class StretchHeader: UIView {
     private var topInset : CGFloat = 0
     private var options: StretchHeaderOptions!
     private var isObservingScrollView: Bool = false
+    
+    private let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.zero)
@@ -99,6 +104,16 @@ open class StretchHeader: UIView {
         imageView.isUserInteractionEnabled = true
         addSubview(imageView)
         sendSubviewToBack(imageView)
+        
+        rx.observe(CGRect.self, #keyPath(UIView.bounds))
+            .map { $0?.size }
+            .filterNil()
+            .distinctUntilChanged()
+            .subscribe(onNext: {
+                self.imageView.bounds.size = $0
+                self.contentSize = $0
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: Public
@@ -126,21 +141,7 @@ open class StretchHeader: UIView {
         self.navigationView = navigationView
         
     }
-    
-    /// Size setup
-    open func setup(imageSize: CGSize) {
-        
-        imageView.frame = CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height)
-        contentSize = imageSize        
-    }
-    
-    /// Full setup. Use without XIB init
-    open func stretchHeaderSize(imageSize: CGSize, controller: UIViewController, options: StretchHeaderOptions, navigationView: UIView? = nil) {
-        
-        setup(options: options, withController: controller, navigationView: navigationView)
-        setup(imageSize: imageSize)
-    }
-    
+
     open func updateScrollViewOffset(_ scrollView: UIScrollView) {
         updateStretch(withScrollViewOffset: scrollView.contentOffset)
     }
