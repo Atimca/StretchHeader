@@ -26,24 +26,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         view.addSubview(tableView)
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-        
-        // NavigationHeader
-        let navibarHeight : CGFloat = navigationController!.navigationBar.bounds.height
-        let statusbarHeight : CGFloat = UIApplication.shared.statusBarFrame.size.height
-        navigationView = UIView()
-        navigationView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: navibarHeight + statusbarHeight)
-        navigationView.backgroundColor = UIColor(red: 121/255.0, green: 193/255.0, blue: 203/255.0, alpha: 1.0)
-        navigationView.alpha = 0.0
-        view.addSubview(navigationView)
-        
-        // back button
-        let button = UIButton(type: .custom)
-        button.frame = CGRect(x: 10, y: 20, width: 44, height: 44)
-        button.setImage(UIImage(named: "navi_back_btn")?.withRenderingMode(.alwaysTemplate), for: UIControl.State())
-        button.tintColor = UIColor.white
-        button.addTarget(self, action: #selector(leftButtonAction), for: .touchUpInside)
-        view.addSubview(button)
-        
+    
         setupHeaderView()
     }
     
@@ -72,7 +55,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         }
         
         let header = StretchView()
-        header.imageView.image = UIImage(named: "photo_sample_05")
+        header.strechView.image = UIImage(named: "photo_sample_05")
 
         // Works only before setting to tableHeaderView for ios 10 and below.
         layoutTableHeaderView(headerView: header)
@@ -81,6 +64,7 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         
         tableView.rx
             .contentOffset
+            .map { $0.y }
             .bind {
                 header.updateStretch(withScrollViewOffset: $0)
             }
