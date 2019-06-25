@@ -47,6 +47,10 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         layoutTableHeaderView()
+        if #available(iOS 11.0, *) {
+            tableView.scrollIndicatorInsets = view.safeAreaInsets
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
