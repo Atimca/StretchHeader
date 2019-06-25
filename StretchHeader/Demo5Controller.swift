@@ -11,9 +11,7 @@ import RxSwift
 
 class Demo5Controller: UIViewController {
     
-    //var header : StretchHeader!
-    var tableView : UITableView!
-    var navigationView = UIView()
+    private var tableView: UITableView!
     
     private let disposeBag = DisposeBag()
     
@@ -25,62 +23,39 @@ class Demo5Controller: UIViewController {
         view.addSubview(tableView)
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-    
+        
         setupHeaderView()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        presumeContentOverSafeArea()
+    }
+    
+    /// Should be called in viewDidLayoutSubviews.
+    private func presumeContentOverSafeArea() {
         if #available(iOS 11.0, *) {
             tableView.scrollIndicatorInsets = view.safeAreaInsets
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: view.safeAreaInsets.bottom, right: 0)
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
-    }
-    
-    
-    func setupHeaderView() {
-        
-        if #available(iOS 11.0, *) {
-            tableView.contentInsetAdjustmentBehavior = .never
-        } else {
-            self.automaticallyAdjustsScrollViewInsets = false
-        }
-        
+    private func setupHeaderView() {
+        enableScrollViewBehindStatusBar()
         let header = StretchView(scrollOffsetObservable: tableView.rx.contentOffset.map { $0.y })
         let imageView = UIImageView(image: UIImage(named: "photo_sample_05"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        header.strechView.addSubview(imageView)
-        NSLayoutConstraint
-            .activate([imageView.leadingAnchor.constraint(equalTo: header.strechView.leadingAnchor),
-                       imageView.topAnchor.constraint(equalTo: header.strechView.topAnchor),
-                       imageView.trailingAnchor.constraint(equalTo: header.strechView.trailingAnchor),
-                       imageView.bottomAnchor.constraint(equalTo: header.strechView.bottomAnchor)])
-
+        header.addStrechView(imageView)
         // Works only before setting to tableHeaderView for ios 10 and below.
         layoutTableHeaderView(headerView: header)
         tableView.tableHeaderView = header
     }
     
-    func layoutTableHeaderView(headerView: UIView) {
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let widthConstrant = headerView.widthAnchor.constraint(equalToConstant: view.bounds.size.width)
-        widthConstrant.isActive = true
-        
-        headerView.setNeedsLayout()
-        headerView.layoutIfNeeded()
-        
-        headerView.bounds.size.height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        
-        headerView.removeConstraint(widthConstrant)
-        headerView.translatesAutoresizingMaskIntoConstraints = true
+    private func enableScrollViewBehindStatusBar() {
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
     }
 }
 
@@ -93,5 +68,25 @@ extension Demo5Controller: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath)
         cell.textLabel?.text = "index -- \((indexPath as NSIndexPath).row)"
         return cell
+    }
+}
+
+extension UIViewController {
+    /// Need to call for autolayout calculation in tableView.tableHeaderView.
+    /// Works only before setting to tableHeaderView for ios 10 and below.
+    func layoutTableHeaderView(headerView: UIView) {
+        
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let widthConstrant = headerView.widthAnchor.constraint(equalToConstant: view.bounds.size.width)
+        widthConstrant.isActive = true
+        
+        headerView.setNeedsLayout()
+        headerView.layoutIfNeeded()
+        
+        headerView.bounds.size.height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
+        headerView.removeConstraint(widthConstrant)
+        headerView.translatesAutoresizingMaskIntoConstraints = true
     }
 }

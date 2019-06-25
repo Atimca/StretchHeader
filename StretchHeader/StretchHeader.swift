@@ -12,7 +12,7 @@ import RxOptional
 
 class StretchHeader: UIView {
     
-    let strechView = UIView()
+    private let strechView = UIView()
     private var contentSize: CGSize = .zero
     private let disposeBag = DisposeBag()
     
@@ -53,5 +53,16 @@ class StretchHeader: UIView {
         } else {
             strechView.frame = CGRect(origin: .zero, size: contentSize)
         }
+    }
+    
+    func addStrechView(_ view: UIView) {
+        strechView.subviews.forEach { $0.removeFromSuperview() }
+        view.translatesAutoresizingMaskIntoConstraints = false
+        strechView.addSubview(view)
+        NSLayoutConstraint
+            .activate([view.leadingAnchor.constraint(equalTo: strechView.leadingAnchor),
+                       view.topAnchor.constraint(equalTo: strechView.topAnchor),
+                       view.trailingAnchor.constraint(equalTo: strechView.trailingAnchor),
+                       view.bottomAnchor.constraint(equalTo: strechView.bottomAnchor)])
     }
 }
