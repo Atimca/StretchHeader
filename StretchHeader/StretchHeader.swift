@@ -15,10 +15,7 @@ import RxOptional
 
 class StretchHeader: UIView {
     
-    let strechView: UIImageView = {
-        let imageView = UIImageView()
-        return imageView
-    }()
+    let strechView = UIView()
     private var contentSize = CGSize.zero
     private let disposeBag = DisposeBag()
     

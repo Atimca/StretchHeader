@@ -55,7 +55,14 @@ class Demo5Controller: UIViewController, UITableViewDataSource, UITableViewDeleg
         }
         
         let header = StretchView()
-        header.strechView.image = UIImage(named: "photo_sample_05")
+        let imageView = UIImageView(image: UIImage(named: "photo_sample_05"))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        header.strechView.addSubview(imageView)
+        NSLayoutConstraint
+            .activate([imageView.leadingAnchor.constraint(equalTo: header.strechView.leadingAnchor),
+                       imageView.topAnchor.constraint(equalTo: header.strechView.topAnchor),
+                       imageView.trailingAnchor.constraint(equalTo: header.strechView.trailingAnchor),
+                       imageView.bottomAnchor.constraint(equalTo: header.strechView.bottomAnchor)])
 
         // Works only before setting to tableHeaderView for ios 10 and below.
         layoutTableHeaderView(headerView: header)
